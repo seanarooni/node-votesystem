@@ -4,16 +4,21 @@
 $(document).ready(function() {   
 
   var socket = io.connect();
-
+	var votePressed = "";
+var scriptCount = 0;
+	
 	$('#up').bind('click', function() {
-		socket.emit('vote','up were pushed');
+		votePressed = "up";
+		socket.emit('vote',1);
 	});
 	
 	$('#down').bind('click', function() {
-		socket.emit('vote','down got plunked');
+		votePressed = "down";
+		socket.emit('vote',-1);
 	});
 	
-  socket.on('server_message', function(data){
-   $('#receiver').append('<li>' + data + '</li>');  
+  socket.on('server_message', function(voteData){
+	voteData.votePressed = "test";
+   $('#receiver').append('<li>' + voteData + '</li>');  
   });
 });

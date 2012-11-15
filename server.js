@@ -15,6 +15,7 @@ server.configure(function(){
     server.use(connect.static(__dirname + '/static'));
     server.use(server.router);
 });
+var globalCount = 0;
 
 //setup the errors
 server.error(function(err, req, res, next){
@@ -35,21 +36,28 @@ server.error(function(err, req, res, next){
                 },status: 500 });
     }
 });
+//headers['Content-Type'] = 'application/json'; 
+
 server.listen(port);
 
 //Setup Socket.IO
+
 var io = io.listen(server);
+var voteData = {
+voteCount: 0,
+votePressed: "newww"
+};
+//console.log(voteData.votePressed);
+var json;
 io.sockets.on('connection', function(socket){
   console.log('Client Connected');
-  socket.on('vote-up', function(data){
-  //console.log(data);
-    socket.broadcast.emit('server_message',data);
-    socket.emit('server_message',data);
-  });
-  socket.on('vote-down', function(data){
-  //console.log(data);
-    socket.broadcast.emit('server_message',data);
-    socket.emit('server_message',data);
+  socket.on('vote', function(voteData){
+
+console.log(voteData); //returns undefined
+  globalCount = globalCount + voteData;
+  	console.log(globalCount);
+    //socket.broadcast.emit('server_message',voteData.votePressed);
+    socket.emit('server_message',voteData);
   });
   socket.on('disconnect', function(){
     console.log('Client Disconnected.');
@@ -74,8 +82,8 @@ server.get('/', function(req,res){
   });
 });
 
-server.get('/testroute', function(req, res){
-	console.log('YOU SAID THE SECRET WORD');
+server.get('/globalcount', function(req, res){
+	console.log('globalcount = ' + globalCount);
 	});
 
 //A Route for Creating a 500 Error (Useful to keep around)
