@@ -1,4 +1,4 @@
-/* Author: YOUR NAME HERE
+/* Author: Sean Iveson
 */
 
 $(document).ready(function() {   
@@ -21,4 +21,5 @@ var scriptCount = 0;
 	voteData.votePressed = "test";
    $('#receiver').append('<li>' + voteData + '</li>');  
   });
+
 });

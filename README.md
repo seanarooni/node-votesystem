@@ -1,8 +1,10 @@
 node-votesystem
 
 based on node-boilerplate
+	found at https://github.com/robrighter/node-boilerplate
+get node from http://nodejs.org/
 
-key files:
+<h1>key files:</h1>
 
 server.js - main server file.
 currently tracks globalCount of the vote and displays it in console

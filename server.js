@@ -48,14 +48,13 @@ voteCount: 0,
 votePressed: "newww"
 };
 //console.log(voteData.votePressed);
-var json;
 io.sockets.on('connection', function(socket){
   console.log('Client Connected');
   socket.on('vote', function(voteData){
 
-console.log(voteData); //returns undefined
+//console.log(voteData); //returns value of voteData passed to server (1 or -1)
   globalCount = globalCount + voteData;
-  	console.log(globalCount);
+  	console.log(globalCount); //displays current total
     //socket.broadcast.emit('server_message',voteData.votePressed);
     socket.emit('server_message',voteData);
   });
