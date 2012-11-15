@@ -1,6 +1,6 @@
 node-votesystem
 
-based on node-boilerplate
+based on node-boilerplate https://github.com/robrighter/node-boilerplate
 
 key files:
 
