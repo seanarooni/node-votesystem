@@ -22,6 +22,10 @@ $(document).ready(function() {
 		//$('#receiver').append('<li>' + voteData + '</li>');
 	});
 
+	socket.on('load_image', function(linkToImage) {
+		//$('#image').append(linkToImage);
+    });
+
 	socket.on('vote_count', function(voteData) {
 		$('#votecount').text(voteData);
 	});
