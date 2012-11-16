@@ -8,7 +8,8 @@ var connect = require('connect'),
 //Start DB
 var db = new sqlite3.Database(':memory:'); // This could be a file and made persistant
 db.serialize(function(){
-	db.run("CREATE TABLE vote_system(id	INTEGER PRIMARY KEY AUTOINCREMENT, name CHAR(31), voteUp NUMERIC voteDown NUMERIC)")
+	db.run("CREATE TABLE vote_system(id	INTEGER PRIMARY KEY AUTOINCREMENT, name CHAR(31), voteUp NUMERIC, voteDown NUMERIC)")
+	db.run("INSERT INTO vote_system VALUES(1,'testdata',0,0)")
 });
 
 
@@ -101,7 +102,7 @@ server.get('/', function(req, res) {
       title: 'Your Page Title',
       description: 'Your Page Description',
       author: 'Your Name',
-      analyticssiteid: 'XXXXXXX'
+      analyticssiteid: 'XXXXXXX',
     }
   });
 });
@@ -123,10 +124,26 @@ server.post('/makenewpoll', function(req,res){
 	res.redirect('/poll/'+req.body.name)
 });
 server.get('/poll/:name', function(req, res){
-	var name = req.params.range
-	db.get("SELECT name from vote_system where name=?", name, function(err, row) {
-		console.log(row)
-		console.log(err)
+	var name = req.params.name
+	console.log(name)
+	db.each("SELECT name from vote_system where name=?", name, function(err, row) {
+		console.log(row.name)
+		if (row.name){
+			var voteData = row.voteUp - row.voteDown
+			//Show the page with it
+			res.render('multipoll.jade',{
+				locals:{
+					title: 'New Poll',
+				    description: 'You can make a realtime poll!',
+				    author: 'A',
+				    analyticssiteid: 'XXXXXXX',
+					voteData: voteData
+				}
+			})
+		}
+		else{
+			throw new NotFound;
+		}
 	  });
 })
 
