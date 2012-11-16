@@ -2,7 +2,15 @@
 var connect = require('connect'),
   express = require('express'),
   io = require('socket.io'),
-  port = (process.env.PORT || 8081);
+  port = (process.env.PORT || 8081),
+  sqlite3 = require('sqlite3').verbose();
+
+//Start DB
+var db = new sqlite3.Database(':memory:'); // This could be a file and made persistant
+db.serialize(function(){
+	db.run("CREATE TABLE vote_system(id	INTEGER PRIMARY KEY AUTOINCREMENT, name CHAR(31), voteUp NUMERIC voteDown NUMERIC)")
+});
+
 
 //Setup Express
 var server = express.createServer();
@@ -53,13 +61,13 @@ server.listen(port);
 
 //Setup Socket.IO
 var io = io.listen(server, {
-  log: false
-}); //debug mode off
+  log: false				//debug mode off
+}); 
 var voteData = {
   voteCount: 0,
   votePressed: "newww"
 };
-//console.log(voteData.votePressed);
+
 io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
   socket.emit('vote_data', voteData);
@@ -68,14 +76,12 @@ io.sockets.on('connection', function(socket) {
 		downVoteCount = downVoteCount + 1;
 		console.log('downVoteCount = ' + downVoteCount);
 	} else if (voteData>0) {
-	upVoteCount = upVoteCount + 1;
-	console.log('upVoteCount = ' + upVoteCount);
+		upVoteCount = upVoteCount + 1;
+		console.log('upVoteCount = ' + upVoteCount);
 	}
-		console.log('voteData = ' + voteData);
- //	console.log('voteData = ' + voteData);
+	console.log('voteData = ' + voteData);
     globalCount = globalCount + voteData;
     console.log(globalCount); //displays current total
-    //socket.broadcast.emit('server_message',voteData.votePressed);
     socket.emit('server_message', voteData);
     io.sockets.emit('vote_count', globalCount);//
   });
@@ -99,6 +105,30 @@ server.get('/', function(req, res) {
     }
   });
 });
+
+server.get('/NewPoll', function(req, res) {
+  res.render('newpoll.jade', {
+    locals: {
+      title: 'New Poll',
+      description: 'You can make a realtime poll!',
+      author: 'A',
+      analyticssiteid: 'XXXXXXX'
+    }
+  });
+});
+
+server.post('/makenewpoll', function(req,res){
+	console.log(req.body.name);
+	db.run("INSERT INTO vote_system (name) VALUES (?)", req.body.name);
+	res.redirect('/poll/'+req.body.name)
+});
+server.get('/poll/:name', function(req, res){
+	var name = req.params.range
+	db.get("SELECT name from vote_system where name=?", name, function(err, row) {
+		console.log(row)
+		console.log(err)
+	  });
+})
 
 server.get('/globalcount', function(req, res) {
   console.log('globalcount = ' + globalCount);

@@ -1,0 +1,18 @@
+extends layout
+
+
+block content
+    div
+    p
+    center  
+        h1(id='sender')='node voting system!'
+        form(action='/makenewpoll', method="post")
+          fieldset
+            legend General
+            p
+              label(for="newpoll") Name:
+                input(type="text", name="name", value='name')             
+            input(type="submit", value="Save")
+        
+
+    p(id='votecount')
