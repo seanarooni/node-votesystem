@@ -61,21 +61,19 @@ server.error(function(err, req, res, next) {
     });
   }
 });
-//headers['Content-Type'] = 'application/json'; 
 server.listen(port);
 
 //Setup Socket.IO
 var io = io.listen(server, {
-  log: false				//debug mode off
-}); 
-var voteData = {
+  log: false
+}); //debug mode off
+var voteData = { //i think this object can/ should be removed
   voteCount: 0,
   votePressed: "newww"
 };
 
 io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
-  console.log(linkToImage);
   socket.emit('load_image', linkToImage);
   socket.on('vote', function(voteData) {
 	if(voteData<0) {
@@ -173,6 +171,5 @@ function NotFound(msg) {
   Error.call(this, msg);
   Error.captureStackTrace(this, arguments.callee);
 }
-
 
 console.log('Listening on http://0.0.0.0:' + port);
