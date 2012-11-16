@@ -108,19 +108,11 @@ server.get('/', function(req, res) {
       description: 'Your Page Description',
       author: 'Your Name',
       analyticssiteid: 'XXXXXXX',
+      globalCount: globalCount,
+      linkToImage: linkToImage
     }
   });
 });
-
-
-
-
-
-
-
-
-
-
 
 server.get('/NewPoll', function(req, res) {
   res.render('newpoll.jade', {
@@ -129,21 +121,9 @@ server.get('/NewPoll', function(req, res) {
       description: 'You can make a realtime poll!',
       author: 'A',
       analyticssiteid: 'XXXXXXX'
-      globalCount: globalCount,
-      linkToImage: linkToImage
     }
   });
 });
-
-
-
-
-
-
-
-
-
-
 
 server.post('/makenewpoll', function(req,res){
 	console.log(req.body.name);
