@@ -19,6 +19,8 @@ server.configure(function() {
   server.use(connect.static(__dirname + '/static'));
   server.use(server.router);
 });
+var upVoteCount = 0;
+var downVoteCount = 0;
 var globalCount = 0;
 
 //setup the errors
@@ -60,14 +62,22 @@ var voteData = {
 //console.log(voteData.votePressed);
 io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
+  socket.emit('vote_data', voteData);
   socket.on('vote', function(voteData) {
-
-    //console.log(voteData); //returns value of voteData passed to server (1 or -1)
+	if(voteData<0) {
+		downVoteCount = downVoteCount + 1;
+		console.log('downVoteCount = ' + downVoteCount);
+	} else if (voteData>0) {
+	upVoteCount = upVoteCount + 1;
+	console.log('upVoteCount = ' + upVoteCount);
+	}
+		console.log('voteData = ' + voteData);
+ //	console.log('voteData = ' + voteData);
     globalCount = globalCount + voteData;
     console.log(globalCount); //displays current total
     //socket.broadcast.emit('server_message',voteData.votePressed);
     socket.emit('server_message', voteData);
-    socket.emit('vote_count', globalCount)
+    io.sockets.emit('vote_count', globalCount);//
   });
   socket.on('disconnect', function() {
     console.log('Client Disconnected.');
