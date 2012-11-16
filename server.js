@@ -28,9 +28,13 @@ server.configure(function() {
   server.use(connect.static(__dirname + '/static'));
   server.use(server.router);
 });
+
+//declare Server variables
 var upVoteCount = 0;
 var downVoteCount = 0;
 var globalCount = 0;
+var linkToImage = 'http://tadcoenvironmental.com/img/oscar.jpg';
+
 
 //setup the errors
 server.error(function(err, req, res, next) {
@@ -71,7 +75,8 @@ var voteData = {
 
 io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
-  socket.emit('vote_data', voteData);
+  console.log(linkToImage);
+  socket.emit('load_image', linkToImage);
   socket.on('vote', function(voteData) {
 	if(voteData<0) {
 		downVoteCount = downVoteCount + 1;
@@ -107,6 +112,16 @@ server.get('/', function(req, res) {
   });
 });
 
+
+
+
+
+
+
+
+
+
+
 server.get('/NewPoll', function(req, res) {
   res.render('newpoll.jade', {
     locals: {
@@ -114,9 +129,21 @@ server.get('/NewPoll', function(req, res) {
       description: 'You can make a realtime poll!',
       author: 'A',
       analyticssiteid: 'XXXXXXX'
+      globalCount: globalCount,
+      linkToImage: linkToImage
     }
   });
 });
+
+
+
+
+
+
+
+
+
+
 
 server.post('/makenewpoll', function(req,res){
 	console.log(req.body.name);

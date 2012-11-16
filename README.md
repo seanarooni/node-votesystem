@@ -1,12 +1,15 @@
 <h1>node-votesystem</h1>
 
+Node-votesystem is a simple example of app built on top of node-boilerplate. 
+Socket.io was used to display real-time auto-updating results (total vote) on each client view. 
+
 based on node-boilerplate
 	found at https://github.com/robrighter/node-boilerplate
 get node from http://nodejs.org/
 <h1>key files:</h1>
 
 <b>server.js</b> - main server file.
-currently tracks globalCount of the vote and displays it in console
+tracks vote counts and pushes data to clients.
 
 <b>static/js/script.js</b>
 js controlling index.jade
@@ -18,6 +21,5 @@ compiles to index.html
 id is controlled with script.js
 
 todo:
--add globalCount display to the cient view
--maybe create a database to track more than one voting variable, to vote things against other things.  
-	that'd require an interface that loaded an object (to judge) and the vote buttons.  
+-function to load objects to vote on.  Maybe I'll do that today.  
+-Decide on a database to track multiple things to vote for.  
