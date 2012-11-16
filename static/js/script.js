@@ -7,10 +7,6 @@ $(document).ready(function() {
 	var votePressed = "";
 	var scriptCount = 0;
 	
-	socket.on('vote_data', function(voteData) {
-		$('#votecount').text(voteData);
-	});
-	
 	$('#up').bind('click', function() {
 		votePressed = "up";
 		socket.emit('vote', 1);

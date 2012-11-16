@@ -95,7 +95,8 @@ server.get('/', function(req, res) {
       title: 'Your Page Title',
       description: 'Your Page Description',
       author: 'Your Name',
-      analyticssiteid: 'XXXXXXX'
+      analyticssiteid: 'XXXXXXX',
+      globalCount: globalCount
     }
   });
 });
