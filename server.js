@@ -2,7 +2,16 @@
 var connect = require('connect'),
   express = require('express'),
   io = require('socket.io'),
-  port = (process.env.PORT || 8081);
+  port = (process.env.PORT || 8081),
+  sqlite3 = require('sqlite3').verbose();
+
+//Start DB
+var db = new sqlite3.Database(':memory:'); // This could be a file and made persistant
+db.serialize(function(){
+	db.run("CREATE TABLE vote_system(id	INTEGER PRIMARY KEY AUTOINCREMENT, name CHAR(31), voteUp NUMERIC, voteDown NUMERIC)")
+	db.run("INSERT INTO vote_system VALUES(1,'testdata',0,0)")
+});
+
 
 //Setup Express
 var server = express.createServer();
@@ -52,21 +61,19 @@ server.error(function(err, req, res, next) {
     });
   }
 });
-//headers['Content-Type'] = 'application/json'; 
 server.listen(port);
 
 //Setup Socket.IO
 var io = io.listen(server, {
   log: false
 }); //debug mode off
-var voteData = {
+var voteData = { //i think this object can/ should be removed
   voteCount: 0,
   votePressed: "newww"
 };
-//console.log(voteData.votePressed);
+
 io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
-  console.log(linkToImage);
   socket.emit('load_image', linkToImage);
   socket.on('vote', function(voteData) {
 	if(voteData<0) {
@@ -76,10 +83,9 @@ io.sockets.on('connection', function(socket) {
 	upVoteCount = upVoteCount + 1;
 	console.log('upVoteCount = ' + upVoteCount);
 	}
-		console.log('voteData = ' + voteData);
- //	console.log('voteData = ' + voteData);
+	console.log('voteData = ' + voteData);
     globalCount = globalCount + voteData;
-    console.log(globalCount); //displays current total
+    console.log('globalCount = ' + globalCount); //displays current total
     //socket.broadcast.emit('server_message',voteData.votePressed);
     socket.emit('server_message', voteData);
     io.sockets.emit('vote_count', globalCount);//
@@ -107,6 +113,41 @@ server.get('/', function(req, res) {
   });
 });
 
+server.get('/NewPoll', function(req, res) {
+  res.render('newpoll.jade', {
+    locals: {
+      title: 'New Poll',
+      description: 'You can make a realtime poll!',
+      author: 'A',
+      analyticssiteid: 'XXXXXXX'
+    }
+  });
+});
+
+server.get('/poll/:name', function(req, res){
+	var name = req.params.name
+	console.log(name)
+	db.each("SELECT name from vote_system where name=?", name, function(err, row) {
+		console.log(row.name)
+		if (row.name){
+			var voteData = row.voteUp - row.voteDown
+			//Show the page with it
+			res.render('multipoll.jade',{
+				locals:{
+					title: 'New Poll',
+				    description: 'You can make a realtime poll!',
+				    author: 'A',
+				    analyticssiteid: 'XXXXXXX',
+					voteData: voteData
+				}
+			})
+		}
+		else{
+			throw new NotFound;
+		}
+	  });
+})
+
 server.get('/globalcount', function(req, res) {
   console.log('globalcount = ' + globalCount);
 });
@@ -126,6 +167,5 @@ function NotFound(msg) {
   Error.call(this, msg);
   Error.captureStackTrace(this, arguments.callee);
 }
-
 
 console.log('Listening on http://0.0.0.0:' + port);
