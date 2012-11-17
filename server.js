@@ -80,13 +80,12 @@ io.sockets.on('connection', function(socket) {
 		downVoteCount = downVoteCount + 1;
 		console.log('downVoteCount = ' + downVoteCount);
 	} else if (voteData>0) {
-	upVoteCount = upVoteCount + 1;
-	console.log('upVoteCount = ' + upVoteCount);
+		upVoteCount = upVoteCount + 1;
+		console.log('upVoteCount = ' + upVoteCount);
 	}
 	console.log('voteData = ' + voteData);
     globalCount = globalCount + voteData;
-    console.log('globalCount = ' + globalCount); //displays current total
-    //socket.broadcast.emit('server_message',voteData.votePressed);
+    console.log(globalCount); //displays current total
     socket.emit('server_message', voteData);
     io.sockets.emit('vote_count', globalCount);//
   });
@@ -124,6 +123,11 @@ server.get('/NewPoll', function(req, res) {
   });
 });
 
+server.post('/makenewpoll', function(req,res){
+	console.log(req.body.name);
+	db.run("INSERT INTO vote_system (name) VALUES (?)", req.body.name);
+	res.redirect('/poll/'+req.body.name)
+});
 server.get('/poll/:name', function(req, res){
 	var name = req.params.name
 	console.log(name)
