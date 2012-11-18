@@ -9,12 +9,12 @@ $(document).ready(function() {
 	
 	$('#up').bind('click', function() {
 		votePressed = "up";
-		socket.emit('vote', 1);
+		socket.emit('vote', 'voteUp');
 	});
 
 	$('#down').bind('click', function() {
 		votePressed = "down";
-		socket.emit('vote', -1);
+		socket.emit('vote', 'voteDown');
 	});
 
 	socket.on('server_message', function(voteData) {
