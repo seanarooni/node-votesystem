@@ -76,15 +76,17 @@ io.sockets.on('connection', function(socket) {
   console.log('Client Connected');
   socket.emit('load_image', linkToImage);
   socket.on('vote', function(voteData) {
-	if(voteData<0) {
-		downVoteCount = downVoteCount + 1;
-		console.log('downVoteCount = ' + downVoteCount);
-	} else if (voteData>0) {
+  //TODO: check here to see if this person already voted
+	
+	if (voteData == 'voteUp') {
 		upVoteCount = upVoteCount + 1;
 		console.log('upVoteCount = ' + upVoteCount);
+		globalCount = globalCount + 1;
+	} else if (voteData == 'voteDown') {
+		downVoteCount = downVoteCount + 1;
+		console.log('downVoteCount = ' + downVoteCount);
+		globalCount = globalCount - 1;	console.log('voteData = ' + voteData);
 	}
-	console.log('voteData = ' + voteData);
-    globalCount = globalCount + voteData;
     console.log(globalCount); //displays current total
     socket.emit('server_message', voteData);
     io.sockets.emit('vote_count', globalCount);//
