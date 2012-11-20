@@ -35,6 +35,7 @@ var globalCount = 0;
 var linkToImage = 'http://tadcoenvironmental.com/img/oscar.jpg';
 var linkToImageC = 'http://tadcoenvironmental.com/img/hoboken.venice.jpeg';
 var chosenPoll = 'default';
+var difference = 0;
 
 
 //setup the errors
@@ -82,7 +83,7 @@ io.sockets.on('connection', function(socket) {
   //TODO: check here to see if this person already voted
 	console.log('chosenPoll = ' + chosenPoll);
 
-    if (chosenPoll != 'default') {
+    if (chosenPoll == 'default') {
 	  var chosenCount = globalCount;
 	  var name = 0; 
     } else {
@@ -112,6 +113,7 @@ io.sockets.on('connection', function(socket) {
 	console.log('upVoteCountC = ' + upVoteCount);
 	globalCount = globalCount + 1;
   } else if (voteData == 'voteDownC') {
+    db.run("UPDATE vote_system SET voteDown=voteDown+1 WHERE name=?", chosenPoll);
 	downVoteCount = downVoteCount + 1;
 	console.log('downVoteCountC = ' + downVoteCount);
 	globalCount = globalCount - 1;
