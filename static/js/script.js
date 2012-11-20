@@ -6,6 +6,10 @@ $(document).ready(function() {
 	var socket = io.connect();
 	var votePressed = "";
 	var scriptCount = 0;
+	var voteData = {
+	  input: "",
+	  name: ""
+	};
 	
 	$('#up').bind('click', function() {
 		votePressed = "up";
@@ -15,6 +19,16 @@ $(document).ready(function() {
 	$('#down').bind('click', function() {
 		votePressed = "down";
 		socket.emit('vote', 'voteDown');
+	});
+	
+	$('#upC').bind('click', function() {
+		votePressed = "up";
+		socket.emit('vote', 'voteUpC');
+	});
+
+	$('#downC').bind('click', function() {
+		votePressed = "down";
+		socket.emit('vote', 'voteDownC');
 	});
 
 	socket.on('server_message', function(voteData) {
