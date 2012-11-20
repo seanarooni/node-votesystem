@@ -7,10 +7,13 @@ block content
 	center	
 		a(id='sender')='node voting system!'
 	p
-		a(id='up') <img src="http://tadcoenvironmental.com/img/arrowup.png">
+		a(id='upC') <img src="http://tadcoenvironmental.com/img/arrowup.png">
 	p
-		a(id='down') <img src="http://tadcoenvironmental.com/img/downarrow.png">
+		a(id='downC') <img src="http://tadcoenvironmental.com/img/downarrow.png">
 			
 		ul(id='receiver')
 
-	p(id='votecount') #{voteData}
+	p(id='votecount') ~
+	
+		p(id='image') 
+	<img src="#{linkToImage}">
